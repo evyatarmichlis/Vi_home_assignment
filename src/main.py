@@ -52,7 +52,7 @@ if __name__ == "__main__":
     os.makedirs('deliverables', exist_ok=True)
 
     final_list = optimized_df.head(best_n)[['member_id', 'uplift_score', 'rank']]
-    final_list.to_csv('prioritized_outreach_list.csv', index=False)
+    final_list.to_csv('deliverables/prioritized_outreach_list.csv', index=False)
 
 
     print("\nDONE.")

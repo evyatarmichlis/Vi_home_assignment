@@ -40,7 +40,6 @@ class FeatureEngineer:
         else:
             print("sentence-transformers not found. Skipping NLP features.")
 
-    # --- Engine A: Behavioral Pulse (Short Window) ---
     def _analyze_behavior(self, df, date_col, prefix):
         if df.empty: return None
         df = df.copy()
