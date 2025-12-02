@@ -1,5 +1,4 @@
 import optuna
-import pandas as pd
 import numpy as np
 from sklearn.model_selection import cross_val_score, cross_val_predict, StratifiedKFold
 from sklearn.metrics import precision_recall_curve, classification_report, roc_auc_score

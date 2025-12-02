@@ -42,14 +42,14 @@ if __name__ == "__main__":
 
 
     uplift_results = learner.predict_uplift(df_test)
-    run_sensitivity_analysis(uplift_results, customer_value=100, output_dir='data/processed/plots')
+    run_sensitivity_analysis(uplift_results, customer_value=100, output_dir='src/data/processed/plots')
 
     optimized_df, best_n = optimize_outreach(uplift_results, cost_per_call=5, customer_value=100)
 
     plot_roi_curve(optimized_df, best_n)
 
     print("\n--- 5. Saving Deliverables ---")
-    os.makedirs('deliverables', exist_ok=True)
+    os.makedirs('src/deliverables', exist_ok=True)
 
     final_list = optimized_df.head(best_n)[['member_id', 'uplift_score', 'rank']]
     final_list.to_csv('deliverables/prioritized_outreach_list.csv', index=False)

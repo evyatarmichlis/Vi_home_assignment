@@ -5,7 +5,7 @@ from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 from pathlib import Path
 from src.data_loader import DataLoader
-from src.main import FeatureEngineer
+from main import FeatureEngineer
 
 plt.style.use('seaborn-v0_8-whitegrid')
 sns.set_palette("husl")
