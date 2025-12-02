@@ -76,9 +76,12 @@ def run_sensitivity_analysis(uplift_df, customer_value=100, output_dir='data/pro
     os.makedirs(output_dir, exist_ok=True)
 
     scenarios = [
+        {'cost': 0, 'label': 'Free Cost (0% of costumer value)'},
         {'cost': 1, 'label': 'Very Low Cost (1% of costumer value)'},
         {'cost': 5, 'label': 'Low Cost (5% of costumer value)'},
-        {'cost': 10, 'label': 'Moderate Cost (10% of costumer value)'}
+        {'cost': 10, 'label': 'Moderate Cost (10% of costumer value)'},
+        {'cost': 20, 'label': 'high Cost (20% of costumer value)'}
+
     ]
 
     plt.figure(figsize=(12, 7))
@@ -109,4 +112,5 @@ def run_sensitivity_analysis(uplift_df, customer_value=100, output_dir='data/pro
     save_path = os.path.join(output_dir, 'sensitivity_analysis.png')
     plt.savefig(save_path)
     plt.close()
+
 

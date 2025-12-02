@@ -5,7 +5,7 @@ from sklearn.manifold import TSNE
 from sklearn.preprocessing import StandardScaler
 from pathlib import Path
 from src.data_loader import DataLoader
-from main import FeatureEngineer
+from src.feature_eng import FeatureEngineer
 
 plt.style.use('seaborn-v0_8-whitegrid')
 sns.set_palette("husl")
@@ -31,6 +31,8 @@ class Visualizer:
         plt.title('Feature Correlation Matrix', fontsize=16)
         plt.tight_layout()
         plt.savefig(self.output_dir / 'correlation_matrix.png', dpi=300)
+        print(f"save plot to {self.output_dir / 'correlation_matrix.png'}")
+
         plt.close()
 
         plt.figure(figsize=(10, 8))
@@ -40,6 +42,8 @@ class Visualizer:
         plt.xlabel('Correlation Coefficient')
         plt.tight_layout()
         plt.savefig(self.output_dir / 'target_correlation.png', dpi=300)
+        print(f"save plot to {self.output_dir / 'target_correlation.png'}")
+
         plt.close()
 
     def plot_tsne(self, df, target='churn', n_samples=3000):
@@ -74,6 +78,7 @@ class Visualizer:
         plt.legend(title='Churn Status', loc='upper right')
         plt.tight_layout()
         plt.savefig(self.output_dir / 'tsne_plot.png', dpi=300)
+        print(f"save plot to {self.output_dir / 'tsne_plot.png'}")
         plt.close()
 
     def plot_feature_distributions(self, df, target='churn', top_n=12):
@@ -110,6 +115,8 @@ class Visualizer:
 
         plt.tight_layout()
         plt.savefig(self.output_dir / 'feature_distributions.png', dpi=300)
+        print(f"save plot to {self.output_dir / 'feature_distributions.png'}")
+
         plt.close()
 
 
