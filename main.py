@@ -1,11 +1,17 @@
 
 import os
+
+import pandas as pd
 from sklearn.metrics import classification_report, roc_auc_score
 from src.data_loader import DataLoader
 from src.feature_eng import FeatureEngineer
 from src.model import ChurnClassifier, TLearner
-from src.optimization_outreach import optimize_outreach, plot_roi_curve, run_sensitivity_analysis
+from src.optimization_outreach import optimize_outreach, plot_roi_curve, run_sensitivity_analysis, \
+    validate_uplift_effectiveness
 from src.vis import Visualizer
+
+
+
 
 
 if __name__ == "__main__":
@@ -73,4 +79,6 @@ if __name__ == "__main__":
     final_list = optimized_df.head(best_n)[['member_id', 'uplift_score', 'rank']]
     final_list.to_csv('deliverables/prioritized_outreach_list.csv', index=False)
 
+    labels_file = f'data/raw/test/test_churn_labels.csv'
+    validate_uplift_effectiveness('deliverables/prioritized_outreach_list.csv', labels_file, best_n)
     print(f"\nDONE. Final list of top {best_n} members saved to 'deliverables/prioritized_outreach_list.csv'.")
