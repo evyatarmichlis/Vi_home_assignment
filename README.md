@@ -87,7 +87,7 @@ if you turn the vis flag into true in the main.py you can recreate varios EDA pl
 To re-tune hyperparameters using Optuna (takes ~5-10 mins):
 
 ```bash
-python -m src.optuna_tuning
+python -m src.tune model
 ```
 
 ##  Methodological Approach
