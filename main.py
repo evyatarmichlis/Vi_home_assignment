@@ -26,11 +26,11 @@ if __name__ == "__main__":
     df_train, feature_cols = engineer.process(raw_train)
     df_test, _ = engineer.process(raw_test)  # Ignore test cols, we use train cols for consistency
 
-    print(f"   🧠 Features Generated: {len(feature_cols)}")
+    print(f" Features Generated: {len(feature_cols)}")
 
     # (Optional) Visualization
     if VIS_FLAG:
-        print("\n   🎨 Generating Visualizations...")
+        print("\n Generating Visualizations...")
         vis = Visualizer()
         vis.plot_correlation_heatmap(df_train)
         vis.plot_tsne(df_train)
@@ -73,4 +73,4 @@ if __name__ == "__main__":
     final_list = optimized_df.head(best_n)[['member_id', 'uplift_score', 'rank']]
     final_list.to_csv('deliverables/prioritized_outreach_list.csv', index=False)
 
-    print(f"\n✅ DONE. Final list of top {best_n} members saved to 'deliverables/prioritized_outreach_list.csv'.")
+    print(f"\nDONE. Final list of top {best_n} members saved to 'deliverables/prioritized_outreach_list.csv'.")

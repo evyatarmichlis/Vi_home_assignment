@@ -11,7 +11,7 @@ def evaluate_t_learner(learner, df_test, feature_cols):
     It treats the Control Model and Treated Model as standard classifiers
     on their respective populations.
     """
-    print("\n🧐 Auditing T-Learner Performance (Classification Task)...")
+    print("\nAuditing T-Learner Performance (Classification Task)...")
 
     # 1. Align Features (Critical for safety)
     # We use the learner's internal feature list to be safe

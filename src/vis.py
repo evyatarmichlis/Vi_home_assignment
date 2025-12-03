@@ -13,11 +13,30 @@ sns.set_palette("husl")
 
 class Visualizer:
     def __init__(self, output_dir='data/processed/plots'):
+        """
+        A class for generating exploratory visualizations for churn modeling datasets.
+
+        This class provides functions to visualize feature correlations, t-SNE embeddings,
+        and feature distributions with respect to the target churn variable.
+        """
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
 
     def plot_correlation_heatmap(self, df, target='churn'):
+        """
+        Generate and save correlation heatmaps showing feature relationships.
 
+        This method creates two plots:
+          1. A full heatmap of correlations among numeric features.
+          2. A barplot showing correlation strength between each feature and the target variable.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            Processed dataset containing numeric and target columns.
+        target : str, optional
+            Name of the target column for correlation analysis (default is 'churn').
+        """
         print("Generating Correlation Heatmap")
 
         ignore_cols = ['member_id', 'uplift_score', 'rank']
@@ -47,7 +66,21 @@ class Visualizer:
         plt.close()
 
     def plot_tsne(self, df, target='churn', n_samples=3000):
+        """
+        Generate a 2D t-SNE projection of the feature space for churn visualization.
 
+        This plot helps in visualizing potential clustering patterns
+        and separability between churned and retained customers in latent space.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            Input dataset containing engineered numeric features and target.
+        target : str, optional
+            Target column indicating churn labels (default is 'churn').
+        n_samples : int, optional
+            Number of samples to use for t-SNE computation (default is 3000).
+        """
         print(" Generating t-SNE Plot (Latent Space)...")
 
         ignore_cols = ['member_id', 'churn', 'uplift_score', 'rank']
@@ -83,6 +116,24 @@ class Visualizer:
 
     def plot_feature_distributions(self, df, target='churn', top_n=12):
 
+        """
+        Plot distribution curves of top correlated numeric features by churn status.
+
+        For each of the top N features most correlated with churn, this function
+        produces kernel density estimates (KDEs) highlighting distribution differences
+        between churned and retained groups.
+
+        Parameters
+        ----------
+        df : pandas.DataFrame
+            Processed dataset containing numeric features and target.
+        target : str, optional
+            Name of the target column (default is 'churn').
+        top_n : int, optional
+            Number of top correlated features to visualize (default is 12).
+        """
+
+        print(" Generating Feature Distributions")
 
         ignore_cols = ['member_id', 'churn', 'uplift_score', 'rank']
         numeric_cols = [c for c in df.columns if c not in ignore_cols and np.issubdtype(df[c].dtype, np.number)]
@@ -134,4 +185,4 @@ if __name__ == "__main__":
     vis.plot_tsne(df_processed)
     vis.plot_feature_distributions(df_processed)
 
-    print("\n✅ All plots generated in data/processed/plots/")
+    print("\n All plots generated in data/processed/plots/")

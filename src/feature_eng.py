@@ -1,5 +1,3 @@
-
-
 import pandas as pd
 import numpy as np
 from sklearn.decomposition import PCA
@@ -10,8 +8,15 @@ try:
 except ImportError:
     SentenceTransformer = None
 
+
 class FeatureEngineer:
     def __init__(self, observation_end_date='2025-07-15'):
+        """
+        Initializes the Feature Engineering pipeline.
+
+        Sets up the cutoff date, loads the NLP model (if available), and defines
+        configurations for Claims Severity mapping and Semantic Anchors.
+        """
         self.cutoff = pd.to_datetime(observation_end_date)
         self.active_threshold_days = 3
 
@@ -41,6 +46,14 @@ class FeatureEngineer:
             print("sentence-transformers not found. Skipping NLP features.")
 
     def _analyze_behavior(self, df, date_col, prefix):
+        """
+        Calculates behavioral pulse metrics for short observation windows.
+
+        Metrics:
+        - Recency (days_since): Days since the last event.
+        - Intensity: Total events per unique active day.
+        - Active Late Window: Binary flag indicating activity in the last 3 days.
+        """
         if df.empty: return None
         df = df.copy()
         df[date_col] = pd.to_datetime(df[date_col])
@@ -62,6 +75,12 @@ class FeatureEngineer:
         return stats.drop(columns=[date_col])
 
     def _process_claims(self, df):
+        """
+        Aggregates medical claims into severity scores and category flags.
+
+        - Maps ICD codes to severity levels (e.g., Cancer=3, Checkup=0).
+        - Creates One-Hot Encoded flags for specific condition categories (E, J, I, etc.).
+        """
         if df.empty: return None
         print("   -> Processing Claims Severity...")
         df = df.copy()
@@ -82,13 +101,23 @@ class FeatureEngineer:
 
         return stats.merge(flags, on='member_id', how='left')
 
-    # ---  NLP Semantic Scoring ---
     def _process_nlp(self, df):
+        """
+        Performs advanced NLP feature extraction on web visit logs.
+
+        Part A: Semantic Anchor Scoring
+        - Calculates Cosine Similarity between page titles and predefined anchors
+          (Risk, Medical, Fitness, Lifestyle).
+
+        Part B: Deep Latent Personas
+        - Identifies the user's most visited page.
+        - Extracts the LLM model embedding for that page.
+        - Applies PCA to reduce the embedding (384 dim) to 3 latent dimensions (Deep Features).
+        """
         if not self.use_nlp or df.empty: return None
         print("   -> Running NLP: Anchors (Explicit) + Deep Features (Implicit)...")
 
         # 1. Unique Pages & Embeddings (Shared Resource)
-        # Using title+description as the unique key per your request
         pages = df[['title', 'description']].drop_duplicates().copy()
 
         # Create text for embedding
@@ -97,7 +126,6 @@ class FeatureEngineer:
         # Calculate Embeddings ONCE (Expensive step)
         # page_embeddings shape: [N_pages, 384]
         page_embeddings = self.nlp_model.encode(pages['text'].tolist(), show_progress_bar=False)
-
 
         sim_matrix = cosine_similarity(page_embeddings, self.anchor_embeddings)
 
@@ -113,15 +141,12 @@ class FeatureEngineer:
         result_anchors.columns = [f"{c[0]}_{c[1]}" for c in result_anchors.columns]
         result_anchors = result_anchors.reset_index()
 
-
         print("      Extracting Deep Features (PCA on most visited page)...")
-
 
         visit_counts = df.groupby(['member_id', 'title', 'description']).size().reset_index(name='visit_count')
 
         top_pages = visit_counts.sort_values(['member_id', 'visit_count'], ascending=[True, False]) \
             .groupby('member_id').head(1)
-
 
         pages['embedding_vector'] = list(page_embeddings)
 
@@ -132,7 +157,6 @@ class FeatureEngineer:
         )
 
         # Stack the vectors into a matrix: [N_users, 384]
-        # Some users might be missing embeddings (rare), drop them safely or fill 0
         valid_embs = top_pages_with_emb.dropna(subset=['embedding_vector'])
 
         if len(valid_embs) > 0:
@@ -156,8 +180,13 @@ class FeatureEngineer:
 
         return final_result
 
-    # --- Main Processor ---
     def process(self, data_dict):
+        """
+        Main pipeline orchestrator.
+
+        Merges App Usage, Web Visits, and Claims data into a single
+        flat feature table per member. Handles missing values and column selection.
+        """
         print(" Running Unified Feature Engineering...")
         base = data_dict['churn_labels'].copy()
 
@@ -198,7 +227,7 @@ class FeatureEngineer:
                 if int_col in base.columns:
                     base.loc[base[int_col] == 0, c] = 999
 
-        # 6. Extract Feature Columns automatically
+        # 6. Extract Feature Columns
         ignore = ['member_id', 'churn', 'outreach', 'icd_code', 'rank', 'url', 'title']
         features = [c for c in base.columns if c not in ignore and np.issubdtype(base[c].dtype, np.number)]
 

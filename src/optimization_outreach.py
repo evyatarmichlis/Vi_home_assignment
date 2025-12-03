@@ -69,7 +69,7 @@ def plot_roi_curve(df, best_n, output_dir='data/processed/plots'):
 
 def run_sensitivity_analysis(uplift_df, customer_value=100, output_dir='data/processed/plots'):
     """
-    SMART WAY: Tests multiple cost scenarios to find a robust 'n'.
+     Tests multiple cost scenarios to find  'n'.
     Since cost is 'marginal', we test ranges like 1%, 5%, 10% of LTV.
     """
     print("\nRunning Sensitivity Analysis on Costs...")
