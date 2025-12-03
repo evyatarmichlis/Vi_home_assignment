@@ -37,10 +37,12 @@ def optimize_outreach(uplift_df, cost_per_call=10, customer_value=100):
     best_idx = df['roi_profit'].idxmax()
     best_n = df.loc[best_idx, 'rank']
     max_profit = df.loc[best_idx, 'roi_profit']
-
+    if max_profit <= 0:
+        # If the maximum profit found is zero or negative, the optimal choice is to call no one.
+        best_n = 0
+        max_profit = 0
     print(f"   Optimal n: {best_n}")
     print(f"   Projected Profit: ${max_profit:,.2f}")
-
     return df, best_n
 
 
@@ -98,9 +100,11 @@ def run_sensitivity_analysis(uplift_df, customer_value=100, output_dir='data/pro
 
         # Plot Curve
         plt.plot(df_opt['rank'], df_opt['roi_profit'], label=f"{label} -> n={best_n}")
+        if best_n > 0:
+            profit_at_n = float(df_opt.loc[df_opt['rank'] == best_n, 'roi_profit'].iloc[0])
+        else:
+            profit_at_n = 0
 
-        # Fix for Matplotlib FutureWarning: explicit float conversion
-        profit_at_n = float(df_opt.loc[df_opt['rank'] == best_n, 'roi_profit'].iloc[0])
         plt.scatter([best_n], [profit_at_n], s=100)
 
     plt.title('Sensitivity Analysis: Optimal "n" at different Marginal Costs', fontsize=14)
