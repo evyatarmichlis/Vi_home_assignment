@@ -134,6 +134,8 @@ $$
 Since the outreach cost is "unknown and marginal," determining a single fixed list size is risky. Instead, we implemented a dynamic Sensitivity Analysis framework. This allows stakeholders to configure different cost assumptions
 (e.g.,0%, 1%, 5%, 10% or 20% of Customer Value), and the model automatically selects the optimal outreach size (n) that maximizes profitability for that specific scenario.
 we can see the results in sensitivity_analysis.png in plot file
+
+Added a validation script to confirm that the targeted group shows a lower churn rate than the control group.  (validate_uplift_effectiveness in optimization_outreach.py)
 ##  Results Summary
 
 | Metric | Score | Insight |
