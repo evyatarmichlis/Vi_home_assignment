@@ -112,6 +112,25 @@ Traditional churn models often fail to detect the subtle impact of outreach beca
 - **Uplift Score**: P(Churn|Control) - P(Churn|Treated).
 
 ### 3. Determining 'n' (Sensitivity Analysis)
+
+## Finding the Optimal Outreach List Size
+
+The optimal list size ($n$) is the rank that maximizes Net Profit, calculated as the difference between the total expected revenue from saved customers and the total cost of contacting those customers.
+
+This objective is achieved by maximizing the following function:
+
+$$
+\text{Optimal } n = \arg \max_{n} \left( \sum_{i=1}^{n} \left[ \text{Uplift Score}_i \times \text{Customer Value} \right] - \left[ n \times \text{Cost per Call} \right] \right)
+$$
+
+**Where:**
+- $\text{Uplift Score}_i$ is the probability of saving member $i$
+- $n$ is the outreach list size
+- $\text{Customer Value}$ is the Lifetime Value (LTV) of a saved customer
+- $n \times \text{Cost per Call}$ is the cumulative expense of the outreach
+
+
+
 Since the outreach cost is "unknown and marginal," determining a single fixed list size is risky. Instead, we implemented a dynamic Sensitivity Analysis framework. This allows stakeholders to configure different cost assumptions
 (e.g.,0%, 1%, 5%, 10% or 20% of Customer Value), and the model automatically selects the optimal outreach size (n) that maximizes profitability for that specific scenario.
 we can see the results in sensitivity_analysis.png in plot file
